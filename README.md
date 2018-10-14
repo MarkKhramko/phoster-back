@@ -18,7 +18,9 @@ $ cp .env.example .env
 # ...
 # to use MySQL
 $ npm install -S mysql2
-# start the application
+# start the application in development
+$ npm run dev
+# start the application in production
 $ npm start
 ```
 
@@ -111,50 +113,6 @@ Now simple configure the keys with your credentials in `.env` file.
 
 All test for this boilerplate uses [Jest](https://github.com/facebook/jest) and [supertest](https://github.com/visionmedia/superagent) for integration testing. So read their docs on further information.
 
-### npm start
-
-This is the entry for a developer. This command:
-
-- runs **nodemon watch task** for the all files conected to `.app/app.js`
-- sets the **environment variable** `NODE_ENV` to `development`
-- opens the db connection for `development`
-- starts the server on 127.0.0.1:2017
-
-### npm test
-
-This command:
-
-- runs `npm run lint` ([eslint](http://eslint.org/)) with the [airbnb styleguide](https://github.com/airbnb/javascript) without arrow-parens rule for **better readability**
-- sets the **environment variable** `NODE_ENV` to `testing`
-- runs `jest --coverage` for testing with [Jest](https://github.com/facebook/jest) and the coverage
-
-## npm run production
-
-This command:
-
-- sets the **environment variable** to `production`
-- opens the db connection for `production`
-- starts the server on 127.0.0.1:2017 or on 127.0.0.1:PORT_ENV
-
-Before running on production you have to set the **environment vaiables**:
-
-- DB_NAME - database name for production
-- DB_USER - database username for production
-- DB_PASS - database password for production
-- DB_HOST - database host for production
-- JWT_SECERT - secret for json web token
-
-Optional:
-
-- PORT - the port your api on 127.0.0.1 or localhot, default to 2018
-
-### other commands
-
-- `npm run dev` - simply start the server withou a watcher
-- `npm run nodemon` - same as `npm start```
-- `pretest` - runs linting before `npm test`
-- `test-ci` - only runs tests, nothing in pretest, nothing in posttest, for better use with ci tools
-
 ## LICENSE
 
-MIT © Mark Khramko
+MIT © Mark Khramko, Roman (Spacecrio) Kurakin, Alexander (Daff) Sinyatkin

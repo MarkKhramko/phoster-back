@@ -13,10 +13,9 @@
   },
   "scripts": {
     "prestart": "",
-    "start": "npm run nodemon",
-    "dev": "cross-env NODE_ENV=development node ./app/app.js",
+    "start": "node ./app/app.js",
+    "dev": "cross-env NODE_ENV=development nodemon --exec npm start",
     "migrate": "cross-env NODE_ENV=development cross-env DB_SHOULD_MIGRATE=true node ./app/app.js",
-    "nodemon": "nodemon --exec npm run dev",
     "prepush": "npm test",
     "fix-prepush-errors": "node_modules/.bin/eslint --fix ./",
     "production": "cross-env NODE_ENV=production node ./app/app.js",
