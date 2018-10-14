@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../../config/database');
+const Op = Sequelize.Op;
 
 // Reference models
 const User = require('./User');
@@ -23,7 +24,7 @@ const Photo = sequelize.define('Photo', {
     type: Sequelize.STRING,
     allowNull:false
   },
-  sender:{
+  senderId:{
     type: Sequelize.INTEGER,
     allowNull:false,
     references:{
@@ -31,7 +32,7 @@ const Photo = sequelize.define('Photo', {
       key: 'id'
     }
   },
-  receiver:{
+  receiverId:{
     type: Sequelize.INTEGER,
     allowNull:true,
     references:{
@@ -50,3 +51,20 @@ const Photo = sequelize.define('Photo', {
 }, { hooks, tableName });
 
 module.exports = Photo;
+
+module.exports.findOneWithoutReceiver = (senderId)=>{
+  const photoFindOptions = {
+    senderId: {
+      [Op.ne]: senderId
+    },
+    receiverId: null
+  };
+
+  console.log({photoFindOptions});
+
+  return new Promise((resolve, reject)=>{
+    Photo.findOne({where:photoFindOptions})
+    .then((foundPhoto)=> resolve([null, foundPhoto]))
+    .catch(error=> resolve([error]))
+  })
+};

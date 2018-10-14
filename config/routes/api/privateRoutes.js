@@ -1,3 +1,3 @@
 module.exports = {
-  'PUT /photos': 'PhotosController.uploadPhoto'
+  'PUT /photos': 'PhotosController.upload'
 };

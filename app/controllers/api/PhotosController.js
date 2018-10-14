@@ -9,15 +9,43 @@ const processError = (err, req, res) => {
   return protocolService.createErrorResponse(res, 500, 'Internal server error');
 };
 
+const saveUploadedPhoto = async (photoData) => {
+  try{
+    const [err, photoWithoutReceiver] = await Photo.findOneWithoutReceiver(photoData.senderId);
+    console.log({ photoWithoutReceiver });
+
+    let receiverId = null;
+    let photoWithoutReceiverURL = null;
+    if(photoWithoutReceiver){
+      receiverId = photoWithoutReceiver.senderId;
+      photoWithoutReceiverURL = photoWithoutReceiver.url;
+
+      const findOptions = { id:photoWithoutReceiver.id };
+      await Photo.update({receiverId:photoData.senderId},{where:findOptions});
+    }
+
+    const finalData = {
+      ...photoData,
+      receiverId
+    };
+
+    const savedPhoto = await Photo.create(finalData);
+    return Promise.resolve([savedPhoto, photoWithoutReceiverURL]);
+  }
+  catch(err){
+    return Promise.reject(err);
+  }
+};
+
 const PhotosController = () => {
 
-  const uploadPhoto = (req, res) => {
+  const upload = (req, res) => {
     const { token } = req;
 
     // Properties, that will be saved in db
     let photoData = {
-      sender: token.id,
-      receiver: null
+      senderId: token.id,
+      receiverId: null
     };
 
     const form = new formidable.IncomingForm();
@@ -74,11 +102,14 @@ const PhotosController = () => {
           const photoURL = result.secure_url;
 
           photoData.url = photoURL;
-          Photo.create(photoData)
-          .then((savedPhoto)=>{
+          saveUploadedPhoto(photoData)
+          .then(([savedPhoto, encounterPhotoURL])=>{
+
             return res.status(200).json({
-              url:photoURL
+              userPhotoURL:savedPhoto.url,
+              encounterPhotoURL
             });
+
           })
           .catch((err) => { 
             return processError(err, req, res)
@@ -88,8 +119,15 @@ const PhotosController = () => {
     });
   };
 
+  const get = (req, res) => {
+    const { token } = req;
+
+    //...
+  };
+
   return {
-    uploadPhoto
+    upload,
+    get
   };
 };
 
