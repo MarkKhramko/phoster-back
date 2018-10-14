@@ -1,9 +1,11 @@
+// Just include this file
+require('./cloudinary');
+
 const privateAPIRoutes = require('./routes/api/privateRoutes');
 const publicAPIRoutes = require('./routes/api/publicRoutes');
-
 const publicWebRoutes = require('./routes/web/publicRoutes');
 
-const dbShouldMigrate = (process.env.DB_SHOULD_MIGRATE === 'true');
+const dbShouldMigrate = process.env.DB_SHOULD_MIGRATE === 'true';
 console.warn('DB Should migrate:', dbShouldMigrate);
 
 module.exports = {
@@ -15,6 +17,6 @@ module.exports = {
   web:{
   	publicRoutes:publicWebRoutes
   },
-  port: process.env.PORT || '2018',
+  port: process.env.PORT || '3001',
   dbShouldMigrate: dbShouldMigrate,
 };

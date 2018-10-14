@@ -33,7 +33,7 @@ const Photo = sequelize.define('Photo', {
   },
   receiver:{
     type: Sequelize.INTEGER,
-    allowNull:false,
+    allowNull:true,
     references:{
       model: User,
       key: 'id'

@@ -15,8 +15,11 @@ const processError = (err, req, res) => {
   return protocolService.createErrorResponse(res, 500, 'Internal server error');
 };
 
-const issueToken = (userId)=>{
-  return authService.issue({ id: userId });
+const issueToken = (user) => {
+  return authService.issue({ 
+    id: user.id,
+    username: user.username
+  });
 };
 
 const UsersController = () => {
@@ -36,7 +39,7 @@ const UsersController = () => {
     return User
     .create(data)
     .then((user) => {
-      const token = issueToken(user.id);
+      const token = issueToken(user);
       return res.status(200).json({
         token,
         user
@@ -65,7 +68,7 @@ const UsersController = () => {
 
         // If user found, compare passwords
         if(bcryptService.comparePassword(password, user.password)){
-          const token = issueToken(user.id);
+          const token = issueToken(user);
           return res.status(200).json({
             token,
             user
@@ -79,11 +82,11 @@ const UsersController = () => {
   };
 
   const validate = (req, res) => {
-    const { token } = req.body;
+    const { token } = req;
 
     authService
     .verify(token, (err) => {
-      if(err) {
+      if(err){
         return protocolService.createErrorResponse(res, 401, 'Invalid Token!');
       }
       return res.status(200).json({ isvalid: true });

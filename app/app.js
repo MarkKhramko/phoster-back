@@ -14,11 +14,13 @@ const cors = require('cors');
 const compression = require('compression');
 
 /**
- * server configuration
+ * Server configuration
  */
 const config = require('../config/');
 const dbService = require('./services/db.service');
-const auth = require('./policies/auth.policy');
+
+// Middleware
+const authMiddleware = require('./policies/auth.policy');
 
 // Environment: development, staging, testing, production
 const environment = process.env.NODE_ENV;
@@ -53,12 +55,12 @@ app.use(helmet({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Secure private routes with JWT authentication middleware
+app.all('/api/v1/private/*', (req, res, next) => authMiddleware(req, res, next));
+
 // Set API routes for express appliction
 app.use('/api/v1', mapRoutes(config.api.publicRoutes, 'app/controllers/api/'));
 app.use('/api/v1/private', mapRoutes(config.api.privateRoutes, 'app/controllers/api/'));
-
-// Secure private routes with jwt authentication middleware
-app.all('/api/v1/private/*', (req, res, next) => auth(req, res, next));
 
 // Set web routes for express appliction
 app.use('/', mapRoutes(config.web.publicRoutes, 'app/controllers/web/'));

@@ -1,29 +1,34 @@
 const JWTService = require('../services/auth.service');
+const protocolService = require('../services/protocol.service');
 
 // usually: "Authorization: Bearer [token]" or "token: [token]"
 module.exports = (req, res, next) => {
   let tokenToVerify;
 
-  if (req.header('Authorization')) {
+  if(req.header('Authorization')) {
     const parts = req.header('Authorization').split(' ');
 
-    if (parts.length === 2) {
+    if(parts.length === 2) {
       const scheme = parts[0];
       const credentials = parts[1];
 
-      if (/^Bearer$/.test(scheme)) {
+      if(/^Bearer$/.test(scheme)) {
         tokenToVerify = credentials;
-      } else {
-        return res.status(401).json({ msg: 'Format for Authorization: Bearer [token]' });
+      } 
+      else {
+        return protocolService.createErrorResponse(res, 401, 'Format for Authorization: Bearer [token]');
       }
-    } else {
-      return res.status(401).json({ msg: 'Format for Authorization: Bearer [token]' });
+    } 
+    else {
+      return protocolService.createErrorResponse(res, 401, 'Format for Authorization: Bearer [token]');
     }
-  } else if (req.body.token) {
+  } 
+  else if (req.body.token) {
     tokenToVerify = req.body.token;
     delete req.query.token;
-  } else {
-    return res.status(401).json({ msg: 'No Authorization was found' });
+  } 
+  else {
+    return protocolService.createErrorResponse(res, 401, 'No Authorization was found');
   }
 
   return JWTService.verify(tokenToVerify, (err, thisToken) => {
