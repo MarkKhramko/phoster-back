@@ -75,7 +75,7 @@ const UsersController = () => {
           });
         }
 
-        return protocolService.createErrorResponse(res, 401, 'Unauthorized');
+        return protocolService.createErrorResponse(res, 401, 'Wrong username or password.');
       })
       .catch((err) => processError(err, req, res));
     }

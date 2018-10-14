@@ -4,6 +4,8 @@ const cloudinary = require('cloudinary');
 const Photo = require('../../models/Photo');
 const protocolService = require('../../services/protocol.service');
 
+const NUMBER_OF_PHOTOS_PER_REQUEST = 5;
+
 const processError = (err, req, res) => {
   console.error("PhotosController error:", {error:err});
   return protocolService.createErrorResponse(res, 500, 'Internal server error');
@@ -111,18 +113,27 @@ const PhotosController = () => {
             });
 
           })
-          .catch((err) => { 
-            return processError(err, req, res)
-          });
+          .catch((err) => processError(err, req, res));
         }
       );
     });
   };
 
   const get = (req, res) => {
-    const { token } = req;
+    const { token, body } = req;
 
-    //...
+    const userId = token.id;
+    const lastPhotoDate = body.lastPhotoDate;
+
+    //TODO: data check
+
+    Photo.findForFeed(userId, lastPhotoDate)
+    .then((photos)=>{
+      return res.status(200).json({
+        photos
+      });
+    })
+    .catch((err)=> processError(err, req, res));
   };
 
   return {

@@ -52,19 +52,23 @@ const Photo = sequelize.define('Photo', {
 
 module.exports = Photo;
 
-module.exports.findOneWithoutReceiver = (senderId)=>{
+module.exports.findOneWithoutReceiver = (senderId) => {
   const photoFindOptions = {
     senderId: {
       [Op.ne]: senderId
     },
     receiverId: null
   };
+  return Photo.findOne({where:photoFindOptions});
+};
 
-  console.log({photoFindOptions});
+module.exports.findForFeed = (receiverId, date = new Date()) => {
 
-  return new Promise((resolve, reject)=>{
-    Photo.findOne({where:photoFindOptions})
-    .then((foundPhoto)=> resolve([null, foundPhoto]))
-    .catch(error=> resolve([error]))
-  })
+  const photoFindOptions = {
+    receiverId,
+    updatedAt:{
+      [Op.lt]: date
+    }
+  };
+  return Photo.findAll({where:photoFindOptions});
 };
