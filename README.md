@@ -26,6 +26,17 @@ $ npm start
 
 PostgreSQL is supported out of the box as it is the default.
 
+## API Routes
+
+> All API requests have prefix `/api/v1`
+
+- POST `/register` - User registration; Params: `{"username":<Username (String)>, "password":<Password (String)>}`.
+- POST `/login` - User login; Params: `{"username":<Username (String)>, "password":<Password (String)>}`.
+- PUT `/photos` - Upload photo; `{"latitude":<Location latitude>, "longitude":<Location longitude>}`.
+- GET `/photos?last_photo_date=<Date of last fetched photo>` - Get feed of photos.
+- POST `/photos/like` - Like specific photo; Params: `{"photoId":<Id of Photo>, "isLiked":<true or false>}`.
+
+
 ## Folder Structure
 
 App has 3 main directories:
