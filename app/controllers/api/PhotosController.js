@@ -120,10 +120,10 @@ const PhotosController = () => {
   };
 
   const get = (req, res) => {
-    const { token, body } = req;
+    const { token, query } = req;
 
     const userId = token.id;
-    const lastPhotoDate = body.lastPhotoDate;
+    const lastPhotoDate = query.last_photo_date;
 
     //TODO: data check
 
