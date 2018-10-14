@@ -47,6 +47,11 @@ const Photo = sequelize.define('Photo', {
   longitude:{
     type: Sequelize.REAL,
     allowNull:true
+  },
+  isLiked:{
+    type: Sequelize.BOOLEAN,
+    allowNull:false,
+    defaultValue: false
   }
 }, { hooks, tableName });
 

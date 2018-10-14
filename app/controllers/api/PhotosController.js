@@ -13,14 +13,11 @@ const processError = (err, req, res) => {
 
 const saveUploadedPhoto = async (photoData) => {
   try{
-    const [err, photoWithoutReceiver] = await Photo.findOneWithoutReceiver(photoData.senderId);
-    console.log({ photoWithoutReceiver });
+    const photoWithoutReceiver = await Photo.findOneWithoutReceiver(photoData.senderId);
 
     let receiverId = null;
-    let photoWithoutReceiverURL = null;
     if(photoWithoutReceiver){
       receiverId = photoWithoutReceiver.senderId;
-      photoWithoutReceiverURL = photoWithoutReceiver.url;
 
       const findOptions = { id:photoWithoutReceiver.id };
       await Photo.update({receiverId:photoData.senderId},{where:findOptions});
@@ -32,7 +29,7 @@ const saveUploadedPhoto = async (photoData) => {
     };
 
     const savedPhoto = await Photo.create(finalData);
-    return Promise.resolve([savedPhoto, photoWithoutReceiverURL]);
+    return Promise.resolve([savedPhoto, photoWithoutReceiver]);
   }
   catch(err){
     return Promise.reject(err);
@@ -55,14 +52,14 @@ const PhotosController = () => {
 
     form.on('field', function(name, value) {
       switch(name){
-        case 'latitude':{
+        case 'latitude':
           // TODO: value check
           photoData.latitude = value;
-        }
-        case 'longitude':{
+          break;
+        case 'longitude':
           // TODO: value check
           photoData.longitude = value;
-        }
+          break;
         default:
           break;
       }
@@ -105,11 +102,11 @@ const PhotosController = () => {
 
           photoData.url = photoURL;
           saveUploadedPhoto(photoData)
-          .then(([savedPhoto, encounterPhotoURL])=>{
+          .then(([userPhoto, encounterPhoto])=>{
 
             return res.status(200).json({
-              userPhotoURL:savedPhoto.url,
-              encounterPhotoURL
+              userPhoto,
+              encounterPhoto
             });
 
           })
@@ -128,17 +125,41 @@ const PhotosController = () => {
     //TODO: data check
 
     Photo.findForFeed(userId, lastPhotoDate)
-    .then((photos)=>{
+    .then((photos) => {
       return res.status(200).json({
         photos
       });
     })
-    .catch((err)=> processError(err, req, res));
+    .catch((err )=> processError(err, req, res));
   };
+
+  const like = (req, res) => {
+    const { token, body } = req;
+
+    const photoId = body.photoId;
+    const isLiked = !!body.isLiked;
+
+    if(isNaN(photoId)){
+      return processError("Wrong ID", req, res);
+    }
+    //TODO: proper data check
+
+    const photoFindOptions = {
+      id: photoId
+    };
+    Photo.update({isLiked:isLiked},{where:photoFindOptions})
+    .then((photo) => {
+      return res.status(200).json({
+        isLiked
+      });
+    })
+    .catch(err => processError(err, req, res))
+  }
 
   return {
     upload,
-    get
+    get,
+    like
   };
 };
 
