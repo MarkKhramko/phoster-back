@@ -1,6 +1,7 @@
 const User = require('../../models/User');
 const authService = require('../../services/auth.service');
 const bcryptService = require('../../services/bcrypt.service');
+const protocolService = require('../../services/protocol.service');
 
 const processError = (err, req, res) => {
 
@@ -9,9 +10,9 @@ const processError = (err, req, res) => {
   // Codes for MySQL and PostreSQL
   if(err.original.code === 'ER_DUP_ENTRY' || err.original.code === '23505') {
     const { body } = req;
-    return res.status(500).json({ msg: `User with username: "${body.username}" already exists.` });
+    return protocolService.createErrorResponse(res, 500, `User with username: "${body.username}" already exists.`);
   }
-  return res.status(500).json({ msg: 'Internal server error' });
+  return protocolService.createErrorResponse(res, 500, 'Internal server error');
 };
 
 const issueToken = (userId)=>{
@@ -23,7 +24,7 @@ const UsersController = () => {
     const { username, password } = req.body;
 
     if(!username || !password){
-      return res.status(400).json({ msg: 'Bad Request: Provide username and password.' });
+      return protocolService.createErrorResponse(res, 400, 'Bad Request: Provide username and password.');
     }
 
     const data = {
@@ -48,7 +49,7 @@ const UsersController = () => {
     const { username, password } = req.body;
 
     if(!username || !password){
-      return res.status(400).json({ msg: 'Bad Request: Provide username and password.' });
+      return protocolService.createErrorResponse(res, 400, 'Bad Request: Provide username and password.');
     }
 
     if(!!username && !!password) {
@@ -59,7 +60,7 @@ const UsersController = () => {
       .findOne({ where: userFindOptions })
       .then((user) => {
         if(!user) {
-          return res.status(400).json({ msg: 'Bad Request: User not found' });
+          return protocolService.createErrorResponse(res, 400, 'Bad Request: User not found.');
         }
 
         // If user found, compare passwords
@@ -71,12 +72,9 @@ const UsersController = () => {
           });
         }
 
-        return res.status(401).json({ msg: 'Unauthorized' });
+        return protocolService.createErrorResponse(res, 401, 'Unauthorized');
       })
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).json({ msg: 'Internal server error' });
-      });
+      .catch((err) => processError(err, req, res));
     }
   };
 
@@ -86,12 +84,11 @@ const UsersController = () => {
     authService
     .verify(token, (err) => {
       if(err) {
-        return res.status(401).json({ isvalid: false, err: 'Invalid Token!' });
+        return protocolService.createErrorResponse(res, 401, 'Invalid Token!');
       }
       return res.status(200).json({ isvalid: true });
     });
   };
-
 
   return {
     register,
