@@ -29,7 +29,8 @@ PostgreSQL is supported out of the box as it is the default.
 ## API Routes
 
 > All API requests have prefix `/api/v1`.
-> Routes with prefix `/private` should be accessed with header in form `Authorization: Bearer <token>`.
+
+> Routes with prefix `/private` must be requested with header in form `Authorization: Bearer <token>`.
 
 - POST `/register` - User registration; Params: `{"username":<Username (String)>, "password":<Password (String)>}`.
 - POST `/login` - User login; Params: `{"username":<Username (String)>, "password":<Password (String)>}`.
