@@ -28,13 +28,14 @@ PostgreSQL is supported out of the box as it is the default.
 
 ## API Routes
 
-> All API requests have prefix `/api/v1`
+> All API requests have prefix `/api/v1`.
+> Routes with prefix `/private` should be accessed with header in form `Authorization: Bearer <token>`.
 
 - POST `/register` - User registration; Params: `{"username":<Username (String)>, "password":<Password (String)>}`.
 - POST `/login` - User login; Params: `{"username":<Username (String)>, "password":<Password (String)>}`.
-- PUT `/photos` - Upload photo; `{"latitude":<Location latitude>, "longitude":<Location longitude>}`.
-- GET `/photos?last_photo_date=<Date of last fetched photo>` - Get feed of photos.
-- POST `/photos/like` - Like specific photo; Params: `{"photoId":<Id of Photo>, "isLiked":<true or false>}`.
+- PUT `/private/photos` - Upload photo; `{"latitude":<Location latitude (Real)>, "longitude":<Location longitude (Real)>}`.
+- GET `/private/photos?last_photo_date=<Date of last fetched photo>` - Get feed of photos.
+- POST `/private/photos/like` - Like specific photo; Params: `{"photoId":<Id of Photo (Int)>, "isLiked":<true or false (Bool)>}`.
 
 
 ## Folder Structure
