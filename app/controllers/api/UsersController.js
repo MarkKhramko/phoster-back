@@ -86,9 +86,9 @@ const UsersController = () => {
 
     authService.verify(token, (err) => {
       if(err){
-        return res.status(200).json({ isvalid: false });
+        return res.status(200).json({ isValid: false });
       }
-      return res.status(200).json({ isvalid: true });
+      return res.status(200).json({ isValid: true });
     });
   };
 
