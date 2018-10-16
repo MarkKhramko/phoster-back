@@ -34,6 +34,7 @@ PostgreSQL is supported out of the box as it is the default.
 
 - POST `/register` - User registration; Params: `{"username":<Username (String)>, "password":<Password (String)>}`.
 - POST `/login` - User login; Params: `{"username":<Username (String)>, "password":<Password (String)>}`.
+- POST `/validate` - Validate JWT; Params: `{"token":<JWT (String)>`.
 - PUT `/private/photos` - Upload photo; `{"latitude":<Location latitude (Real)>, "longitude":<Location longitude (Real)>}`.
 - GET `/private/photos?last_photo_date=<Date of last fetched photo>` - Get feed of photos.
 - POST `/private/photos/like` - Like specific photo; Params: `{"photoId":<Id of Photo (Int)>, "isLiked":<true or false (Bool)>}`.

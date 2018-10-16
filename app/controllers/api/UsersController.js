@@ -82,12 +82,11 @@ const UsersController = () => {
   };
 
   const validate = (req, res) => {
-    const { token } = req;
+    const { token } = req.body;
 
-    authService
-    .verify(token, (err) => {
+    authService.verify(token, (err) => {
       if(err){
-        return protocolService.createErrorResponse(res, 401, 'Invalid Token!');
+        return res.status(200).json({ isvalid: false });
       }
       return res.status(200).json({ isvalid: true });
     });
