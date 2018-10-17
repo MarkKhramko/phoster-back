@@ -67,7 +67,7 @@ module.exports.findOneWithoutReceiver = (senderId) => {
   return Photo.findOne({where:photoFindOptions});
 };
 
-module.exports.findForFeed = (receiverId, date = new Date()) => {
+module.exports.findForFeed = (receiverId, date = new Date(), limit=5) => {
   let photoFindOptions = {
     receiverId
   };
@@ -80,6 +80,7 @@ module.exports.findForFeed = (receiverId, date = new Date()) => {
     where:photoFindOptions,
     order: [
       ['updatedAt', 'DESC']
-    ]
+    ],
+    limit: limit
   });
 };

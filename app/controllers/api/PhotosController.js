@@ -124,7 +124,7 @@ const PhotosController = () => {
 
     //TODO: data check
 
-    Photo.findForFeed(userId, lastPhotoDate)
+    Photo.findForFeed(userId, lastPhotoDate, NUMBER_OF_PHOTOS_PER_REQUEST)
     .then((photos) => {
       return res.status(200).json({
         photos
