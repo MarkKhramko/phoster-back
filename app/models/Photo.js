@@ -68,12 +68,18 @@ module.exports.findOneWithoutReceiver = (senderId) => {
 };
 
 module.exports.findForFeed = (receiverId, date = new Date()) => {
-
-  const photoFindOptions = {
-    receiverId,
-    updatedAt:{
-      [Op.lt]: date
-    }
+  let photoFindOptions = {
+    receiverId
   };
-  return Photo.findAll({where:photoFindOptions});
+
+  if(!!date){
+    photoFindOptions['updatedAt'] = { [Op.lt]: date };
+  }
+
+  return Photo.findAll({
+    where:photoFindOptions,
+    order: [
+      ['updatedAt', 'DESC']
+    ]
+  });
 };
